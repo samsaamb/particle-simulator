@@ -6,6 +6,7 @@ public class Body {
 	private int width;
 	private int height;
 	private double velocity;
+	//noob
 	
 	public Body(double x, double y, int width, int height, double velocity) {
 		this.x = x;
