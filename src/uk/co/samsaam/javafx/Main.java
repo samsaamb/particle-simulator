@@ -9,18 +9,19 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.stage.Stage;
 
 public class Main extends Application {
-
+		public static double screenWidth = 1680;
+		public static double screenHeight = 1050; 
 	    @Override 
 	    public void start(Stage theStage) 
 	    {
-	        theStage.setTitle( "Tokyo" );
+	        theStage.setTitle( "N-Body Simulator" );
 	     
 	        Group root = new Group();
 	        Scene theScene = new Scene( root );
 	        theStage.setScene( theScene );
 	     
 	        
-	        Canvas canvas = new Canvas( 512, 512 );
+	        Canvas canvas = new Canvas( screenWidth, screenHeight );
 	        root.getChildren().add( canvas );
 	     
 	        GraphicsContext graphics = canvas.getGraphicsContext2D();
