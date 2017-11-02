@@ -9,8 +9,6 @@ public class Body {
 	private double yvelocity;
 	private double forceX;
 	private double forceY;
-	private double accelerationX;
-	private double accelerationY;
 	private double mass;
 
 	public Body(double x, double y, int width, int height, double xvelocity, double yvelocity, double mass) {
@@ -37,22 +35,6 @@ public class Body {
 
 	public void setForceY(double forceY) {
 		this.forceY = forceY;
-	}
-
-	public double getAccelerationX() {
-		return accelerationX;
-	}
-
-	public void setAccelerationX(double accelerationX) {
-		this.accelerationX = accelerationX;
-	}
-
-	public double getAccelerationY() {
-		return accelerationY;
-	}
-
-	public void setAccelerationY(double accelerationY) {
-		this.accelerationY = accelerationY;
 	}
 	
 	public double getMass() {
