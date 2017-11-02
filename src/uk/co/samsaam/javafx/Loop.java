@@ -22,7 +22,7 @@ public class Loop extends AnimationTimer {
 	public static final boolean edgeRestriction = false;
 	public ArrayList<Body> bodies = new ArrayList<Body>();
 	private GraphicsContext graphics;
-	private static final int NUM_GENERATED = 100;
+	private static final int NUM_GENERATED = 2000;
 	public static final double G = 6.674 * Math.pow(10, -11);
 
 	public Loop(GraphicsContext graphics) {
@@ -36,8 +36,6 @@ public class Loop extends AnimationTimer {
 		
 		long dt = now - before;
 		before = now;
-		
-		System.out.println(dt / 1000000000.0);
 		
 		draw();
 		update();
@@ -68,6 +66,9 @@ public class Loop extends AnimationTimer {
 				body.setyVelocity(edgeYDetection(currentY, currentYVelocity));
 			}
 			
+			double netForceX = 0;
+			double netForceY = 0;
+			
 			for (Body otherBodies : bodies) {
 				if (body.getX() - otherBodies.getX() != 0 && body.getY() - otherBodies.getY() != 0) {
 					double dx = otherBodies.getX() - body.getX();
@@ -75,10 +76,12 @@ public class Loop extends AnimationTimer {
 					double distance = Math.sqrt((Math.pow((dx), 2)) + (Math.pow((dy), 2)));
 					double force = (G * (otherBodies.getMass() * (body.getMass())) / distance*distance);
 					
-					body.setForceX(body.getForceX() + (force * (dx / distance)));
-					body.setForceY(body.getForceY() + (force * (dy / distance)));
+					netForceX += force * (dx / distance);
+					netForceY += force * (dy / distance);
 				}
 			}
+			body.setForceX(netForceX);
+			body.setForceY(netForceY);
 			body.setxVelocity(body.getxVelocity() + ((body.getForceX() / body.getMass())));
 			body.setyVelocity(body.getyVelocity() + ((body.getForceY() / body.getMass())));
 			body.setX(currentX + (body.getxVelocity()));
@@ -104,8 +107,20 @@ public class Loop extends AnimationTimer {
 			int height = width;
 			double xvelocity = rand(0,1);
 			double yvelocity = rand(0,1);
-			bodies.add(new Body(x, y, width, height, xvelocity, yvelocity, mass));
+			Color colour = Color.WHITE;
+			bodies.add(new Body(x, y, width, height, xvelocity, yvelocity, mass, colour));
 		}
+		/*int mass = 10000000;
+		int width = 10;
+		int height = width;
+		
+		bodies.add(new Body(770, 525, width, height, 0, 1.5, mass));
+		bodies.add(new Body(350, 525, width, height, 0, 3, mass));
+		bodies.add(new Body(50, 525, width, height, 0, 4, mass));
+		bodies.add(new Body(graphics.getCanvas().getWidth() - 350, 525, width, height, 0, 3, mass));
+		bodies.add(new Body(graphics.getCanvas().getWidth() - 600, 525, width, height, 0, -3, mass));
+		bodies.add(new Body(910, 525, width, height, 0, -1.5, mass));*/
+		//bodies.add(new Body(840, 525, 50, 50, 0, 0, 1000000000));
 	}
 
 	public double edgeYDetection(double currentY, double yvelocity) {
