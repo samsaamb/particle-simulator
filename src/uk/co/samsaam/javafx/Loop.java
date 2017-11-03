@@ -17,12 +17,11 @@ import javafx.scene.paint.Color;
 
 public class Loop extends AnimationTimer {
 	
-	private static long before = 0L;
-	
+	private static long before = System.nanoTime();
 	private static final boolean edgeRestriction = false;
 	private ArrayList<Body> bodies = new ArrayList<Body>();
 	private GraphicsContext graphics;
-	private static final int NUM_GENERATED = 1000;
+	private static final int NUM_GENERATED = 3000;
 	private static final double G = 6.674 * Math.pow(10, -11);
 	private static final double SECONDS_IN_NANOSECONDS = 1E9;
 	
@@ -35,12 +34,12 @@ public class Loop extends AnimationTimer {
 
 	@Override
 	public void handle(long now) {
-		
 		long dt = now - before;
 		before = now;
+		
 		int fps = (int) Math.round(1/((dt/SECONDS_IN_NANOSECONDS)));
 		draw(fps);
-		update();
+		update(dt/SECONDS_IN_NANOSECONDS);
 	}
 
 	// Clears screen, loops through array list of body particles and draws them
@@ -53,11 +52,14 @@ public class Loop extends AnimationTimer {
 		}
 		graphics.setFill(Color.WHITE);
 		String FPS = "FPS: " + Integer.toString(fps);
-		graphics.fillText(FPS, 0, 10);
+		graphics.fillText(FPS, 0, 12);
 	}
 
 	// loops through array list of bodies and increments velocity (x only so far)
-	private void update() {
+	private void update(double dt) {
+		
+		double normalisation = dt * 60;
+		
 		for (Body body : bodies) {
 			double currentX = body.getX();
 			double currentY = body.getY();
@@ -85,8 +87,10 @@ public class Loop extends AnimationTimer {
 					netForceY += force * (dy / distance);
 				}
 			}
-			body.setForceX(netForceX);
-			body.setForceY(netForceY);
+
+			
+			body.setForceX(netForceX * normalisation);
+			body.setForceY(netForceY * normalisation);
 			int r = (int) rand(0,255);
 			int g = (int) rand(0,255);
 			int b = (int) rand(0,255);
@@ -96,7 +100,6 @@ public class Loop extends AnimationTimer {
 			body.setyVelocity(body.getyVelocity() + ((body.getForceY() / body.getMass())));
 			body.setX(currentX + (body.getxVelocity()));
 			body.setY(currentY + (body.getyVelocity()));
-			
 		}
 	}
 
