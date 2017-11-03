@@ -17,13 +17,15 @@ import javafx.scene.paint.Color;
 
 public class Loop extends AnimationTimer {
 	
-	public static long before = 0L;
+	private static long before = 0L;
 	
-	public static final boolean edgeRestriction = false;
-	public ArrayList<Body> bodies = new ArrayList<Body>();
+	private static final boolean edgeRestriction = false;
+	private ArrayList<Body> bodies = new ArrayList<Body>();
 	private GraphicsContext graphics;
-	private static final int NUM_GENERATED = 2000;
-	public static final double G = 6.674 * Math.pow(10, -11);
+	private static final int NUM_GENERATED = 1000;
+	private static final double G = 6.674 * Math.pow(10, -11);
+	private static final double SECONDS_IN_NANOSECONDS = 1E9;
+	
 
 	public Loop(GraphicsContext graphics) {
 		this.graphics = graphics;
@@ -36,19 +38,22 @@ public class Loop extends AnimationTimer {
 		
 		long dt = now - before;
 		before = now;
-		
-		draw();
+		int fps = (int) Math.round(1/((dt/SECONDS_IN_NANOSECONDS)));
+		draw(fps);
 		update();
 	}
 
 	// Clears screen, loops through array list of body particles and draws them
-	private void draw() {
+	private void draw(int fps) {
 		graphics.setFill(Color.BLACK);
 		graphics.fillRect(0, 0, 1680, 1050);
 		for (Body body : bodies) {
-			graphics.setFill(Color.WHITE);
+			graphics.setFill(body.getColour());
 			graphics.fillOval(body.getX(), body.getY(), body.getWidth(), body.getHeight());
 		}
+		graphics.setFill(Color.WHITE);
+		String FPS = "FPS: " + Integer.toString(fps);
+		graphics.fillText(FPS, 0, 10);
 	}
 
 	// loops through array list of bodies and increments velocity (x only so far)
@@ -82,6 +87,11 @@ public class Loop extends AnimationTimer {
 			}
 			body.setForceX(netForceX);
 			body.setForceY(netForceY);
+			int r = (int) rand(0,255);
+			int g = (int) rand(0,255);
+			int b = (int) rand(0,255);
+			body.setColour(Color.rgb(r, g, b));
+			
 			body.setxVelocity(body.getxVelocity() + ((body.getForceX() / body.getMass())));
 			body.setyVelocity(body.getyVelocity() + ((body.getForceY() / body.getMass())));
 			body.setX(currentX + (body.getxVelocity()));
@@ -105,8 +115,8 @@ public class Loop extends AnimationTimer {
 			double mass = rand(500000, 5000000);
 			int width = (int) mass / 500000;
 			int height = width;
-			double xvelocity = rand(0,1);
-			double yvelocity = rand(0,1);
+			double xvelocity = 0;
+			double yvelocity = 0;
 			Color colour = Color.WHITE;
 			bodies.add(new Body(x, y, width, height, xvelocity, yvelocity, mass, colour));
 		}

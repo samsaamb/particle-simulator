@@ -1,5 +1,7 @@
 package uk.co.samsaam.javafx;
 
+import javafx.scene.paint.Color;
+
 public class Body {
 	private double x;
 	private double y;
@@ -10,8 +12,9 @@ public class Body {
 	private double forceX;
 	private double forceY;
 	private double mass;
-
-	public Body(double x, double y, int width, int height, double xvelocity, double yvelocity, double mass) {
+	private Color colour;
+	
+	public Body(double x, double y, int width, int height, double xvelocity, double yvelocity, double mass, Color colour) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -19,6 +22,7 @@ public class Body {
 		this.xvelocity = xvelocity;
 		this.yvelocity = yvelocity;
 		this.mass = mass;
+		this.colour = colour;
 	}
 	
 	public double getForceX() {
@@ -79,6 +83,14 @@ public class Body {
 	}
 	public void setyVelocity(double yvelocity) {
 		this.yvelocity = yvelocity;
+	}
+
+	public Color getColour() {
+		return colour;
+	}
+
+	public void setColour(Color colour) {
+		this.colour = colour;
 	}
 	
 	
