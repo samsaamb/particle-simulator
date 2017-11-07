@@ -21,7 +21,7 @@ public class Loop extends AnimationTimer {
 	private static final boolean edgeRestriction = false;
 	private ArrayList<Body> bodies = new ArrayList<Body>();
 	private GraphicsContext graphics;
-	private static final int NUM_GENERATED = 3000;
+	private static final int NUM_GENERATED = 1000;
 	private static final double G = 6.674 * Math.pow(10, -11);
 	private static final double SECONDS_IN_NANOSECONDS = 1E9;
 	
@@ -91,9 +91,10 @@ public class Loop extends AnimationTimer {
 			
 			body.setForceX(netForceX * normalisation);
 			body.setForceY(netForceY * normalisation);
-			int r = (int) rand(0,255);
-			int g = (int) rand(0,255);
-			int b = (int) rand(0,255);
+			//System.out.println( (int) Math.abs((body.getForceX()/body.getMass())) * 255);
+			int r = (int) (Math.abs(body.getxVelocity()) * 12);
+			int g = (int) (Math.abs(body.getyVelocity()) * 12);
+			int b = (int) 50;
 			body.setColour(Color.rgb(r, g, b));
 			
 			body.setxVelocity(body.getxVelocity() + ((body.getForceX() / body.getMass())));
@@ -127,13 +128,13 @@ public class Loop extends AnimationTimer {
 		int width = 10;
 		int height = width;
 		
-		bodies.add(new Body(770, 525, width, height, 0, 1.5, mass));
-		bodies.add(new Body(350, 525, width, height, 0, 3, mass));
-		bodies.add(new Body(50, 525, width, height, 0, 4, mass));
-		bodies.add(new Body(graphics.getCanvas().getWidth() - 350, 525, width, height, 0, 3, mass));
-		bodies.add(new Body(graphics.getCanvas().getWidth() - 600, 525, width, height, 0, -3, mass));
-		bodies.add(new Body(910, 525, width, height, 0, -1.5, mass));*/
-		//bodies.add(new Body(840, 525, 50, 50, 0, 0, 1000000000));
+		bodies.add(new Body(770, 525, width, height, 0, 1.5, mass, Color.WHITE));
+		bodies.add(new Body(350, 525, width, height, 0, 3, mass, Color.WHITE));
+		bodies.add(new Body(50, 525, width, height, 0, 4, mass, Color.WHITE));
+		bodies.add(new Body(graphics.getCanvas().getWidth() - 350, 525, width, height, 0, 3, mass, Color.WHITE));
+		bodies.add(new Body(graphics.getCanvas().getWidth() - 600, 525, width, height, 0, -3, mass, Color.WHITE));
+		bodies.add(new Body(910, 525, width, height, 0, -1.5, mass, Color.WHITE));
+		bodies.add(new Body(840, 525, 50, 50, 0, 0, 1000000000, Color.WHITE));*/
 	}
 
 	public double edgeYDetection(double currentY, double yvelocity) {
