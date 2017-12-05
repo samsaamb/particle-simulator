@@ -5,8 +5,7 @@ package uk.co.samsaam.javafx;
 //TODO Distance function
 //TODO Collision
 //TODO Edge box collision
-//TODO Implement equation for
-//TODO gravity, F=GmM/r^2, and use this to create attraction between bodies. Give objects different colours for different F's to show their attraction strength
+
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -80,7 +79,7 @@ public class Loop extends AnimationTimer {
 				if (body.getX() - otherBodies.getX() != 0 && body.getY() - otherBodies.getY() != 0) { //checking that a body is not itself
 					double dx = otherBodies.getX() - body.getX(); //calculating the difference in x between two bodies
 					double dy = otherBodies.getY() - body.getY(); //calculating the difference in y between two bodies
-					double distance = Math.sqrt((Math.pow((dx), 2)) + (Math.pow((dy), 2))); //calculating the distance between two bodies using dx and dy
+					double distance = body.distanceFrom(otherBodies);
 					double force = (G * (otherBodies.getMass() * (body.getMass())) / distance*distance); //calculating the force between two bodies using distance between them, and their masses.
 					
 					netForceX += force * (dx / distance); //Calculating the vector sum of the forces on a body in x and y.

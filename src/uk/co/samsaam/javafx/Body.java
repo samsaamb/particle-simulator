@@ -25,6 +25,12 @@ public class Body {
 		this.colour = colour;
 	}
 	
+	public double distanceFrom(Body otherBody) { //calculates the distance between this body and the body passed in
+		double dx = x - otherBody.x;
+		double dy = y - otherBody.y;
+		return Math.sqrt(dx*dx + dy*dy);
+	}
+	
 	public double getForceX() {
 		return forceX;
 	}
