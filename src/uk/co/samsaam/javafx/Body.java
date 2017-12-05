@@ -42,11 +42,11 @@ public class Body {
 	
 	public void updateParameters(double dt) {
 		double normalisation = dt * 60;
-		forceX = forceX * normalisation;
+		forceX = forceX * normalisation; //normalisaation feature to smoothen speeds over varying fps.
 		forceY = forceY * normalisation;
-		xvelocity += (forceX/mass);
+		xvelocity += (forceX/mass); //appending velocity with acceleration
 		yvelocity += (forceY/mass);
-		x += xvelocity;
+		x += xvelocity; //appending positions with velocity
 		y += yvelocity;
 		int r = (int)  (255 -(( (1/ (Math.abs(xvelocity) +1) * 255)))); //Mapping the velocity of an object to its colour
 		int g = (int)  (255 -(( (1/ (Math.abs(yvelocity) +1) * 255)))); 
