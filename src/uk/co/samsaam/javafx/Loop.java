@@ -66,27 +66,19 @@ public class Loop extends AnimationTimer {
 			double currentYVelocity = body.getyVelocity();
 			
 			body.resetForce(); //resetting the force on the body before calculating it again
+			
 			if (edgeRestriction == true) {
 				body.setxVelocity(edgeXDetection(currentX, currentXVelocity)); //making sure no bodies can leave the screen boundary if edgeRestriction is true
 				body.setyVelocity(edgeYDetection(currentY, currentYVelocity));
 			}
 			
-			double netForceX = 0; //resetting the force variables before recalculating them
-			double netForceY = 0;
-			
 			for (Body otherBodies : bodies) {
 				if (body.getX() - otherBodies.getX() != 0 && body.getY() - otherBodies.getY() != 0) { //checking that a body is not itself
-					double dx = otherBodies.getX() - body.getX(); //calculating the difference in x between two bodies
-					double dy = otherBodies.getY() - body.getY(); //calculating the difference in y between two bodies
-					double distance = body.distanceFrom(otherBodies);
-					double force = (G * (otherBodies.getMass() * (body.getMass())) / distance*distance); //calculating the force between two bodies using distance between them, and their masses.
-					
-					netForceX += force * (dx / distance); //Calculating the vector sum of the forces on a body in x and y.
-					netForceY += force * (dy / distance);
+					body.calculateForce(otherBodies, G); //calculating the force between the two bodies
 				}
 			}
-			body.setForceX(netForceX * normalisation); //Setting the x and y forces, utilising the normalisation to ensure that a bod
-			body.setForceY(netForceY * normalisation);
+			body.setForceX(body.getForceX() * normalisation); //Setting the x and y forces, utilising the normalisation to ensure that a bod
+			body.setForceY(body.getForceY() * normalisation);
 			int r = (int)  (255 -(((1	/(Math.abs(body.getxVelocity())+1) * 255)))); //Mapping the velocity of an object to its colour
 			int g = (int)  (255 -(((1	/(Math.abs(body.getyVelocity())+1) * 255)))); 
 			int b = (int) 50;

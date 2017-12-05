@@ -26,9 +26,18 @@ public class Body {
 	}
 	
 	public double distanceFrom(Body otherBody) { //calculates the distance between this body and the body passed in
-		double dx = x - otherBody.x;
-		double dy = y - otherBody.y;
+		double dx = otherBody.x - this.x; //calculating the difference in x between two bodies
+		double dy = otherBody.y - this.y; //calculating the difference in y between two bodies
 		return Math.sqrt(dx*dx + dy*dy);
+	}
+	
+	public void calculateForce(Body otherBody, double G) {
+		double dx = otherBody.x - this.x;
+		double dy = otherBody.y - this.y;
+		double distance = distanceFrom(otherBody);
+		double force = (G * (otherBody.getMass() * this.mass) / distance*distance); //calculating the force between two bodies using distance between them, and their masses.
+		this.forceX += force * (dx / distance); //vector sum of the forces on the body
+		this.forceY += force * (dy / distance); //reintroduces the sign that was removed by the squaring of the distance
 	}
 	
 	public void resetForce() {
