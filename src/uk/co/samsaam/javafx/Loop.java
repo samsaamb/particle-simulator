@@ -65,8 +65,7 @@ public class Loop extends AnimationTimer {
 			double currentXVelocity = body.getxVelocity();
 			double currentYVelocity = body.getyVelocity();
 			
-			body.setForceX(0); //resetting the force on the body before calculating it again
-			body.setForceY(0);
+			body.resetForce(); //resetting the force on the body before calculating it again
 			if (edgeRestriction == true) {
 				body.setxVelocity(edgeXDetection(currentX, currentXVelocity)); //making sure no bodies can leave the screen boundary if edgeRestriction is true
 				body.setyVelocity(edgeYDetection(currentY, currentYVelocity));

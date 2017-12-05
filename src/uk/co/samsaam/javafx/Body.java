@@ -31,6 +31,10 @@ public class Body {
 		return Math.sqrt(dx*dx + dy*dy);
 	}
 	
+	public void resetForce() {
+		forceX = 0.0;
+		forceY = 0.0;
+	}
 	public double getForceX() {
 		return forceX;
 	}
