@@ -17,27 +17,27 @@ import javafx.scene.paint.Color;
 
 public class Loop extends AnimationTimer {
 	
-	private static long before = System.nanoTime();
-	private static final boolean edgeRestriction = false;
-	private ArrayList<Body> bodies = new ArrayList<Body>();
-	private GraphicsContext graphics;
-	private static final int NUM_GENERATED = 1000;
-	private static final double G = 6.674 * Math.pow(10, -11);
-	private static final double SECONDS_IN_NANOSECONDS = 1E9;
+	private static long before = System.nanoTime(); //Used in calculating fps.
+	private static final boolean edgeRestriction = false; //Setting, if true bodies won't leave the screen.
+	private ArrayList<Body> bodies = new ArrayList<Body>(); //declaring the arraylist of bodies
+	private GraphicsContext graphics; //declaring the graphics object
+	private static final int NUM_GENERATED = 1000; //number of bodies to generate
+	private static final double G = 6.674 * Math.pow(10, -11); //Gravitational Constant, G
+	private static final double SECONDS_IN_NANOSECONDS = 1E9; //Number of nanoseconds in a second, used to calculate dt in seconds and fps.
 	
 
 	public Loop(GraphicsContext graphics) {
-		this.graphics = graphics;
-		graphics.setFill(Color.WHITE);
-		generateBodies();
+		this.graphics = graphics; //Setting the graphics object so it is ready for use
+		graphics.setFill(Color.WHITE); //Setting the default fill colour to white
+		generateBodies(); //Generates/Initialises the bodies
 	}
 
 	@Override
 	public void handle(long now) {
 		long dt = now - before;
-		before = now;
+		before = now; //Each loop, the before variable will hold the nanotime of the frame before the current frame, allowing dt to be calculated
 		
-		int fps = (int) Math.round(1/((dt/SECONDS_IN_NANOSECONDS)));
+		int fps = (int) Math.round(1/((dt/SECONDS_IN_NANOSECONDS))); //calculates the fps of the program at the current frame.
 		draw(fps);
 		update(dt/SECONDS_IN_NANOSECONDS);
 	}
@@ -45,99 +45,84 @@ public class Loop extends AnimationTimer {
 	// Clears screen, loops through array list of body particles and draws them
 	private void draw(int fps) {
 		graphics.setFill(Color.BLACK);
-		graphics.fillRect(0, 0, 1680, 1050);
+		graphics.fillRect(0, 0, 1680, 1050); //Colouring the background black
 		for (Body body : bodies) {
-			graphics.setFill(body.getColour());
+			graphics.setFill(body.getColour()); //Paint all of the bodies in the body arraylist
 			graphics.fillOval(body.getX(), body.getY(), body.getWidth(), body.getHeight());
 		}
-		graphics.setFill(Color.WHITE);
+		graphics.setFill(Color.WHITE); 
 		String FPS = "FPS: " + Integer.toString(fps);
-		graphics.fillText(FPS, 0, 12);
+		graphics.fillText(FPS, 0, 12); //Painting the fps to the top left corner
 	}
 
-	// loops through array list of bodies and increments velocity (x only so far)
+	// loops through array list of bodies and increments velocity
 	private void update(double dt) {
 		
-		double normalisation = dt * 60;
+		double normalisation = dt * 60; //A method of keeping the animation speed constant whilst fps varies.
 		
-		for (Body body : bodies) {
-			double currentX = body.getX();
+		for (Body body : bodies) { //for each body in the arraylist of bodies
+			double currentX = body.getX(); //making the code easier to read later on
 			double currentY = body.getY();
 			double currentXVelocity = body.getxVelocity();
 			double currentYVelocity = body.getyVelocity();
 			
-			body.setForceX(0);
+			body.setForceX(0); //resetting the force on the body before calculating it again
 			body.setForceY(0);
 			if (edgeRestriction == true) {
-				body.setxVelocity(edgeXDetection(currentX, currentXVelocity));
+				body.setxVelocity(edgeXDetection(currentX, currentXVelocity)); //making sure no bodies can leave the screen boundary if edgeRestriction is true
 				body.setyVelocity(edgeYDetection(currentY, currentYVelocity));
 			}
 			
-			double netForceX = 0;
+			double netForceX = 0; //resetting the force variables before recalculating them
 			double netForceY = 0;
 			
 			for (Body otherBodies : bodies) {
-				if (body.getX() - otherBodies.getX() != 0 && body.getY() - otherBodies.getY() != 0) {
-					double dx = otherBodies.getX() - body.getX();
-					double dy = otherBodies.getY() - body.getY();
-					double distance = Math.sqrt((Math.pow((dx), 2)) + (Math.pow((dy), 2)));
-					double force = (G * (otherBodies.getMass() * (body.getMass())) / distance*distance);
+				if (body.getX() - otherBodies.getX() != 0 && body.getY() - otherBodies.getY() != 0) { //checking that a body is not itself
+					double dx = otherBodies.getX() - body.getX(); //calculating the difference in x between two bodies
+					double dy = otherBodies.getY() - body.getY(); //calculating the difference in y between two bodies
+					double distance = Math.sqrt((Math.pow((dx), 2)) + (Math.pow((dy), 2))); //calculating the distance between two bodies using dx and dy
+					double force = (G * (otherBodies.getMass() * (body.getMass())) / distance*distance); //calculating the force between two bodies using distance between them, and their masses.
 					
-					netForceX += force * (dx / distance);
+					netForceX += force * (dx / distance); //Calculating the vector sum of the forces on a body in x and y.
 					netForceY += force * (dy / distance);
 				}
 			}
-
-			
-			body.setForceX(netForceX * normalisation);
+			body.setForceX(netForceX * normalisation); //Setting the x and y forces, utilising the normalisation to ensure that a bod
 			body.setForceY(netForceY * normalisation);
-			//System.out.println( (int) Math.abs((body.getForceX()/body.getMass())) * 255);
-			int r = (int) (Math.abs(body.getxVelocity()) * 12);
-			int g = (int) (Math.abs(body.getyVelocity()) * 12);
+			int r = (int)  (255 -(((1	/(Math.abs(body.getxVelocity())+1) * 255)))); //Mapping the velocity of an object to its colour
+			int g = (int)  (255 -(((1	/(Math.abs(body.getyVelocity())+1) * 255)))); 
 			int b = (int) 50;
 			body.setColour(Color.rgb(r, g, b));
-			
-			body.setxVelocity(body.getxVelocity() + ((body.getForceX() / body.getMass())));
-			body.setyVelocity(body.getyVelocity() + ((body.getForceY() / body.getMass())));
-			body.setX(currentX + (body.getxVelocity()));
+			body.setxVelocity((body.getxVelocity() + ((body.getForceX() / body.getMass())))); //Appending to the velocity with the acceleration in the x and y
+			body.setyVelocity((body.getyVelocity() + ((body.getForceY() / body.getMass()))));
+			body.setX(currentX + (body.getxVelocity())); //Appending the x and y positions with the velocities.
 			body.setY(currentY + (body.getyVelocity()));
 		}
 	}
 
 	// function to generate a random number between min and max parameters
 	public double rand(double min, double max) {
-		double random = ThreadLocalRandom.current().nextDouble(min, max);
+		double random = ThreadLocalRandom.current().nextDouble(min, max); //Generates a random double between two specified values
 		return random;
 	}
 
-	// generate "NUM_GENERATED" amount of bodies, with random x and y positions,
-	// sizes and x velocities. adds to the bodies arraylist of body objects
+	/* generate "NUM_GENERATED" amount of bodies, with random x and y positions,
+	sizes, x velocities, y velocities and mass. Adds to the bodies arraylist of body objects */
 	public void generateBodies() {
 		for (int i = 0; i < NUM_GENERATED; i++) {
 			double x = rand(0, graphics.getCanvas().getWidth());
 			double y = rand(0, graphics.getCanvas().getHeight());
 			double mass = rand(500000, 5000000);
-			int width = (int) mass / 500000;
+			int width = (int) mass / 500000;  //This makes it so that a body's mass is relational to it's size.
 			int height = width;
 			double xvelocity = 0;
 			double yvelocity = 0;
 			Color colour = Color.WHITE;
 			bodies.add(new Body(x, y, width, height, xvelocity, yvelocity, mass, colour));
 		}
-		/*int mass = 10000000;
-		int width = 10;
-		int height = width;
-		
-		bodies.add(new Body(770, 525, width, height, 0, 1.5, mass, Color.WHITE));
-		bodies.add(new Body(350, 525, width, height, 0, 3, mass, Color.WHITE));
-		bodies.add(new Body(50, 525, width, height, 0, 4, mass, Color.WHITE));
-		bodies.add(new Body(graphics.getCanvas().getWidth() - 350, 525, width, height, 0, 3, mass, Color.WHITE));
-		bodies.add(new Body(graphics.getCanvas().getWidth() - 600, 525, width, height, 0, -3, mass, Color.WHITE));
-		bodies.add(new Body(910, 525, width, height, 0, -1.5, mass, Color.WHITE));
-		bodies.add(new Body(840, 525, 50, 50, 0, 0, 1000000000, Color.WHITE));*/
 	}
 
-	public double edgeYDetection(double currentY, double yvelocity) {
+	public double edgeYDetection(double currentY, double yvelocity) { //takes the bodies velocity and position, if the position is outside of the screen then velocity is multiplied by -1.
 		if (currentY <= 0.0 || currentY >= graphics.getCanvas().getHeight()) {
 			return -yvelocity;
 		} else {
