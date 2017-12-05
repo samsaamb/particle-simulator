@@ -40,6 +40,20 @@ public class Body {
 		this.forceY += force * (dy / distance); //reintroduces the sign that was removed by the squaring of the distance
 	}
 	
+	public void updateParameters(double dt) {
+		double normalisation = dt * 60;
+		forceX = forceX * normalisation;
+		forceY = forceY * normalisation;
+		xvelocity += (forceX/mass);
+		yvelocity += (forceY/mass);
+		x += xvelocity;
+		y += yvelocity;
+		int r = (int)  (255 -(( (1/ (Math.abs(xvelocity) +1) * 255)))); //Mapping the velocity of an object to its colour
+		int g = (int)  (255 -(( (1/ (Math.abs(yvelocity) +1) * 255)))); 
+		int b = (int) 50;
+		colour = Color.rgb(r, g, b);
+	}
+	
 	public void resetForce() {
 		forceX = 0.0;
 		forceY = 0.0;

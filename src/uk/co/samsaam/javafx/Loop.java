@@ -2,10 +2,8 @@ package uk.co.samsaam.javafx;
 
 //TODO Resizable screen
 //TODO Pan
-//TODO Distance function
 //TODO Collision
-//TODO Edge box collision
-
+//TODO Use timestep in calculations.
 
 import java.util.ArrayList;
 import java.util.concurrent.ThreadLocalRandom;
@@ -77,16 +75,8 @@ public class Loop extends AnimationTimer {
 					body.calculateForce(otherBodies, G); //calculating the force between the two bodies
 				}
 			}
-			body.setForceX(body.getForceX() * normalisation); //Setting the x and y forces, utilising the normalisation to ensure that a bod
-			body.setForceY(body.getForceY() * normalisation);
-			int r = (int)  (255 -(((1	/(Math.abs(body.getxVelocity())+1) * 255)))); //Mapping the velocity of an object to its colour
-			int g = (int)  (255 -(((1	/(Math.abs(body.getyVelocity())+1) * 255)))); 
-			int b = (int) 50;
-			body.setColour(Color.rgb(r, g, b));
-			body.setxVelocity((body.getxVelocity() + ((body.getForceX() / body.getMass())))); //Appending to the velocity with the acceleration in the x and y
-			body.setyVelocity((body.getyVelocity() + ((body.getForceY() / body.getMass()))));
-			body.setX(currentX + (body.getxVelocity())); //Appending the x and y positions with the velocities.
-			body.setY(currentY + (body.getyVelocity()));
+			
+			body.updateParameters(dt); //update the positions of the bodies
 		}
 	}
 
