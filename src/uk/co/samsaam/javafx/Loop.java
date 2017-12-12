@@ -15,7 +15,7 @@ import javafx.scene.paint.Color;
 public class Loop extends AnimationTimer {
 	
 	private static long before = System.nanoTime(); //Used in calculating fps.
-	private static final boolean edgeRestriction = false; //Setting, if true bodies won't leave the screen.
+	private static final boolean screenRestrict = false; //Setting, if true bodies won't leave the screen.
 	private ArrayList<Body> bodies = new ArrayList<Body>(); //declaring the arraylist of bodies
 	private GraphicsContext graphics; //declaring the graphics object
 	private static final int NUM_GENERATED = 1000; //number of bodies to generate
@@ -53,21 +53,12 @@ public class Loop extends AnimationTimer {
 	}
 
 	// loops through array list of bodies and increments velocity
-	private void update(double dt) {
-		
-		double normalisation = dt * 60; //A method of keeping the animation speed constant whilst fps varies.
-		
+	private void update(double dt) {	
 		for (Body body : bodies) { //for each body in the arraylist of bodies
-			double currentX = body.getX(); //making the code easier to read later on
-			double currentY = body.getY();
-			double currentXVelocity = body.getxVelocity();
-			double currentYVelocity = body.getyVelocity();
-			
 			body.resetForce(); //resetting the force on the body before calculating it again
 			
-			if (edgeRestriction == true) {
-				body.setxVelocity(edgeXDetection(currentX, currentXVelocity)); //making sure no bodies can leave the screen boundary if edgeRestriction is true
-				body.setyVelocity(edgeYDetection(currentY, currentYVelocity));
+			if (screenRestrict == true) {
+				body.screenRestrict(body, graphics);
 			}
 			
 			for (Body otherBodies : bodies) {
@@ -99,22 +90,6 @@ public class Loop extends AnimationTimer {
 			double yvelocity = 0;
 			Color colour = Color.WHITE;
 			bodies.add(new Body(x, y, width, height, xvelocity, yvelocity, mass, colour));
-		}
-	}
-
-	public double edgeYDetection(double currentY, double yvelocity) { //takes the bodies velocity and position, if the position is outside of the screen then velocity is multiplied by -1.
-		if (currentY <= 0.0 || currentY >= graphics.getCanvas().getHeight()) {
-			return -yvelocity;
-		} else {
-			return yvelocity;
-		}
-	}
-
-	public double edgeXDetection(double currentX, double xvelocity) {
-		if (currentX <= 0.0 || currentX >= graphics.getCanvas().getWidth()) {
-			return -xvelocity;
-		} else {
-			return xvelocity;
 		}
 	}
 

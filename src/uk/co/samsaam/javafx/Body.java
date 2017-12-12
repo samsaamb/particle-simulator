@@ -1,5 +1,6 @@
 package uk.co.samsaam.javafx;
 
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
 public class Body {
@@ -52,6 +53,15 @@ public class Body {
 		int g = (int)  (255 -(( (1/ (Math.abs(yvelocity) +1) * 255)))); 
 		int b = (int) 50;
 		colour = Color.rgb(r, g, b);
+	}
+	
+	public void screenRestrict(Body body, GraphicsContext graphics) {
+		if (body.x <= 0.0 || body.x >= graphics.getCanvas().getWidth()) {
+			body.xvelocity *= -1;
+		}
+		if (body.y <= 0.0 || body.y >= graphics.getCanvas().getHeight()) {
+			body.yvelocity *= -1;
+		} 
 	}
 	
 	public void resetForce() {
