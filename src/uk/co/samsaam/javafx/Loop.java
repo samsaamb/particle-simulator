@@ -61,9 +61,9 @@ public class Loop extends AnimationTimer {
 				body.screenRestrict(body, graphics);
 			}
 			
-			for (Body otherBodies : bodies) {
-				if (body.getX() - otherBodies.getX() != 0 && body.getY() - otherBodies.getY() != 0) { //checking that a body is not itself
-					body.calculateForce(otherBodies, G); //calculating the force between the two bodies
+			for (Body otherBody : bodies) {
+				if (body != otherBody) { //checking that a body is not itself
+					body.calculateForce(otherBody, G); //calculating the force between the two bodies
 				}
 			}
 			
