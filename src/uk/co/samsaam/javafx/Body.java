@@ -8,8 +8,8 @@ public class Body {
 	private double y;
 	private int width;
 	private int height;
-	private double xvelocity;
-	private double yvelocity;
+	private double xVelocity;
+	private double yVelocity;
 	private double forceX;
 	private double forceY;
 	private double mass;
@@ -20,8 +20,8 @@ public class Body {
 		this.y = y;
 		this.width = width;
 		this.height = height;
-		this.xvelocity = xvelocity;
-		this.yvelocity = yvelocity;
+		this.xVelocity = xvelocity;
+		this.yVelocity = yvelocity;
 		this.mass = mass;
 		this.colour = colour;
 	}
@@ -45,22 +45,22 @@ public class Body {
 		double normalisation = dt * 60;
 		forceX = forceX * normalisation; //normalisaation feature to smoothen speeds over varying fps.
 		forceY = forceY * normalisation;
-		xvelocity += (forceX/mass); //appending velocity with acceleration
-		yvelocity += (forceY/mass);
-		x += xvelocity; //appending positions with velocity
-		y += yvelocity;
-		int r = (int)  (255 -(( (1/ (Math.abs(xvelocity) +1) * 255)))); //Mapping the velocity of an object to its colour
-		int g = (int)  (255 -(( (1/ (Math.abs(yvelocity) +1) * 255)))); 
+		xVelocity += (forceX/mass); //appending velocity with acceleration
+		yVelocity += (forceY/mass);
+		x += xVelocity; //appending positions with velocity
+		y += yVelocity;
+		int r = (int)  (255 -(( (1/ (Math.abs(xVelocity) +1) * 255)))); //Mapping the velocity of an object to its colour
+		int g = (int)  (255 -(( (1/ (Math.abs(yVelocity) +1) * 255)))); 
 		int b = (int) 50;
 		colour = Color.rgb(r, g, b);
 	}
 	
 	public void screenRestrict(Body body, GraphicsContext graphics) {
 		if (body.x <= 0.0 || body.x >= graphics.getCanvas().getWidth()) {
-			body.xvelocity *= -1;
+			body.xVelocity *= -1;
 		}
 		if (body.y <= 0.0 || body.y >= graphics.getCanvas().getHeight()) {
-			body.yvelocity *= -1;
+			body.yVelocity *= -1;
 		} 
 	}
 	
@@ -68,29 +68,27 @@ public class Body {
 		forceX = 0.0;
 		forceY = 0.0;
 	}
+	
+	
+	
 	public double getForceX() {
 		return forceX;
 	}
-
 	public void setForceX(double forceX) {
 		this.forceX = forceX;
 	}
-
 	public double getForceY() {
 		return forceY;
 	}
-
 	public void setForceY(double forceY) {
 		this.forceY = forceY;
 	}
-	
 	public double getMass() {
 		return mass;
 	}
 	public void setMass(double mass) {
 		this.mass = mass;
 	}
-	
 	public double getX() {
 		return x;
 	}
@@ -116,25 +114,21 @@ public class Body {
 		this.height = height;
 	}
 	public double getxVelocity() {
-		return xvelocity;
+		return xVelocity;
 	}
 	public void setxVelocity(double xvelocity) {
-		this.xvelocity = xvelocity;
+		this.xVelocity = xvelocity;
 	}
 	public double getyVelocity() {
-		return yvelocity;
+		return yVelocity;
 	}
 	public void setyVelocity(double yvelocity) {
-		this.yvelocity = yvelocity;
+		this.yVelocity = yvelocity;
 	}
-
 	public Color getColour() {
 		return colour;
 	}
-
 	public void setColour(Color colour) {
 		this.colour = colour;
 	}
-	
-	
 }
