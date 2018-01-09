@@ -31,7 +31,8 @@ public class Body {
 		return Math.sqrt(dx*dx + dy*dy);
 	}
 	
-	public void calculateForce(Body otherBody, double G) {
+	public void calculateForce(Body otherBody) {
+		double G = 6.674E-11;
 		double dx = otherBody.x - this.x;
 		double dy = otherBody.y - this.y;
 		double distance = distanceFrom(otherBody);
@@ -42,22 +43,35 @@ public class Body {
 	
 	public void updateParameters(double dt) {
 		double normalisation = dt * 60;
-		forceX = forceX * normalisation; //normalisaation feature to smoothen speeds over varying fps.
+		forceX = forceX * normalisation; //normalisation feature to smoothen speeds over varying fps.
 		forceY = forceY * normalisation;
-		xvelocity += (forceX/mass); //appending velocity with acceleration
-		yvelocity += (forceY/mass);
-		x += xvelocity; //appending positions with velocity
-		y += yvelocity;
+		xvelocity += ((forceX/mass)); //appending velocity with acceleration
+		yvelocity += ((forceY/mass));
+		x += (xvelocity); //appending positions with velocity
+		y += (yvelocity);
 		int r = (int)  (255 -(( (1/ (Math.abs(xvelocity) +1) * 255)))); //Mapping the velocity of an object to its colour
 		int g = (int)  (255 -(( (1/ (Math.abs(yvelocity) +1) * 255)))); 
 		int b = (int) 50;
-		colour = Color.rgb(r, g, b);
+		//colour = Color.rgb(r, g, b);
 	}
 	
 	public void resetForce() {
 		forceX = 0.0;
 		forceY = 0.0;
 	}
+	
+	public boolean in(Quadrant quadrant) {
+
+		return (quadrant.contains(this.x, this.y));
+	}
+	
+	public Body addBody(Body otherBody) {
+		double combinedMass = this.mass + otherBody.mass;
+		double newX = (this.x*this.mass + otherBody.x*otherBody.mass)/combinedMass;
+		double newY = (this.y*this.mass + otherBody.y*otherBody.mass)/combinedMass;
+		return new Body(newX, newY, 1, 1, this.xvelocity, otherBody.xvelocity, combinedMass, this.colour);
+	}
+	
 	public double getForceX() {
 		return forceX;
 	}

@@ -6,6 +6,11 @@ package uk.co.samsaam.javafx;
 //TODO Use timestep in calculations.
 
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 
 import javafx.animation.AnimationTimer;
@@ -14,12 +19,14 @@ import javafx.scene.paint.Color;
 
 public class Loop extends AnimationTimer {
 	
+	//ExecutorService executor = Executors.newFixedThreadPool(5);
+	
 	private static long before = System.nanoTime(); //Used in calculating fps.
 	private static final boolean edgeRestriction = false; //Setting, if true bodies won't leave the screen.
 	private ArrayList<Body> bodies = new ArrayList<Body>(); //declaring the arraylist of bodies
 	private GraphicsContext graphics; //declaring the graphics object
-	private static final int NUM_GENERATED = 1000; //number of bodies to generate
-	private static final double G = 6.674 * Math.pow(10, -11); //Gravitational Constant, G
+	private static final int NUM_GENERATED = 25_000; //number of bodies to generate
+	private static final double G = 6.674E-11; //Gravitational Constant, G
 	private static final double SECONDS_IN_NANOSECONDS = 1E9; //Number of nanoseconds in a second, used to calculate dt in seconds and fps.
 	
 
@@ -42,11 +49,14 @@ public class Loop extends AnimationTimer {
 	// Clears screen, loops through array list of body particles and draws them
 	private void draw(int fps) {
 		graphics.setFill(Color.BLACK);
+		
 		graphics.fillRect(0, 0, 1680, 1050); //Colouring the background black
+
 		for (Body body : bodies) {
 			graphics.setFill(body.getColour()); //Paint all of the bodies in the body arraylist
 			graphics.fillOval(body.getX(), body.getY(), body.getWidth(), body.getHeight());
 		}
+		
 		graphics.setFill(Color.WHITE); 
 		String FPS = "FPS: " + Integer.toString(fps);
 		graphics.fillText(FPS, 0, 12); //Painting the fps to the top left corner
@@ -55,29 +65,64 @@ public class Loop extends AnimationTimer {
 	// loops through array list of bodies and increments velocity
 	private void update(double dt) {
 		
-		double normalisation = dt * 60; //A method of keeping the animation speed constant whilst fps varies.
+		Quadrant quad = new Quadrant(525,525, 1050);
+		Quadtree tree = new Quadtree(quad);
 		
-		for (Body body : bodies) { //for each body in the arraylist of bodies
-			double currentX = body.getX(); //making the code easier to read later on
-			double currentY = body.getY();
-			double currentXVelocity = body.getxVelocity();
-			double currentYVelocity = body.getyVelocity();
-			
-			body.resetForce(); //resetting the force on the body before calculating it again
-			
-			if (edgeRestriction == true) {
-				body.setxVelocity(edgeXDetection(currentX, currentXVelocity)); //making sure no bodies can leave the screen boundary if edgeRestriction is true
-				body.setyVelocity(edgeYDetection(currentY, currentYVelocity));
+		for (Body body : bodies) {
+			if (body.in(quad)) {
+				tree.insert(body);
 			}
-			
-			for (Body otherBodies : bodies) {
-				if (body.getX() - otherBodies.getX() != 0 && body.getY() - otherBodies.getY() != 0) { //checking that a body is not itself
-					body.calculateForce(otherBodies, G); //calculating the force between the two bodies
-				}
-			}
-			
-			body.updateParameters(dt); //update the positions of the bodies
 		}
+		
+		bodies.parallelStream().forEach(body -> {
+			body.resetForce(); //resetting the force on the body before calculating it again
+			tree.updateForce(body);
+			body.updateParameters(dt);
+		});
+		
+		
+// # SINGLE THREADED		
+		
+//		for (Body body : bodies) {
+//			double currentX = body.getX(); //making the code easier to read later on
+//			double currentY = body.getY();
+//			double currentXVelocity = body.getxVelocity();
+//			double currentYVelocity = body.getyVelocity();
+//			
+//			body.resetForce(); //resetting the force on the body before calculating it again
+//			tree.updateForce(body);
+//			body.updateParameters(dt);
+//			
+//			if (edgeRestriction == true) {
+//				body.setxVelocity(edgeXDetection(currentX, currentXVelocity)); //making sure no bodies can leave the screen boundary if edgeRestriction is true
+//				body.setyVelocity(edgeYDetection(currentY, currentYVelocity));
+//			}
+//		}
+		
+// # END SINGLE THREADED
+		
+// # MULTI THREADED
+		
+//		List<Callable<Object>> tasks = new LinkedList<Callable<Object>>();
+//		
+//		for (Body body : bodies) {
+//			Runnable task = () -> {
+//				body.resetForce(); //resetting the force on the body before calculating it again
+//				tree.updateForce(body);
+//				body.updateParameters(dt);
+//			};
+//			
+//			tasks.add(Executors.callable((task)));
+//		}
+//		
+//		try {
+//			executor.invokeAll(tasks);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
+		
+// # END MULTI THREADED		
+		
 	}
 
 	// function to generate a random number between min and max parameters
@@ -89,14 +134,31 @@ public class Loop extends AnimationTimer {
 	/* generate "NUM_GENERATED" amount of bodies, with random x and y positions,
 	sizes, x velocities, y velocities and mass. Adds to the bodies arraylist of body objects */
 	public void generateBodies() {
-		for (int i = 0; i < NUM_GENERATED; i++) {
-			double x = rand(0, graphics.getCanvas().getWidth());
-			double y = rand(0, graphics.getCanvas().getHeight());
-			double mass = rand(500000, 5000000);
-			int width = (int) mass / 500000;  //This makes it so that a body's mass is relational to it's size.
-			int height = width;
+		for (int i = 0; i < NUM_GENERATED/2; i++) {
+			double x = rand(50, 100);
+			double y = rand(100, 600);
+			double mass = 5E4;
+			int width = 1;  //This makes it so that a body's mass is relational to it's size.
+			int height = 1;
+			double xvelocity = 0;//rand(9.9, 10);
+			double yvelocity = 10;//rand(9.9, 10);
+			Color colour = Color.BLUEVIOLET;
+			bodies.add(new Body(x, y, width, height, xvelocity, yvelocity, mass, colour));
+		}
+		
+//		bodies.add(new Body(375, 500, 20, 20, 0, 0, 5E7, Color.BLACK));
+//		bodies.add(new Body(675, 500, 20, 20, 0, 0, 5E7, Color.BLACK));
+//		bodies.add(new Body(525, 500, 20, 20, 0, 0, 5E7, Color.BLACK));
+		
+		
+		for (int i = 0; i < NUM_GENERATED / 2; i++) {
+			double x = rand(750, 800);
+			double y = rand(500, 1000);
+			double mass = 5E4;
+			int width = 1;  //This makes it so that a body's mass is relational to it's size.
+			int height = 1;
 			double xvelocity = 0;
-			double yvelocity = 0;
+			double yvelocity = -10;
 			Color colour = Color.WHITE;
 			bodies.add(new Body(x, y, width, height, xvelocity, yvelocity, mass, colour));
 		}
