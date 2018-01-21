@@ -2,6 +2,7 @@ package uk.co.samsaam.javafx;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import uk.co.samsaam.javafx.Body;
 import uk.co.samsaam.javafx.Main;
 import uk.co.samsaam.javafx.Quadrant;
 
@@ -72,9 +73,15 @@ public class Body {
 	}
 	
 	public boolean in(Quadrant quadrant) {
-		return (quadrant.contains(this.x, this.y));
+		return (quadrant.contains(this.x, this.y)); //returns true if a quadrant contains this body.
 	}
 	
+	public Body addBody(Body otherBody) { //calculates and instantiates the aggregate body of this body and the body passed in
+		double combinedMass = this.mass + otherBody.mass; //combine the mass
+		double newX = (this.x*this.mass + otherBody.x*otherBody.mass)/combinedMass; //calculate the centre-of-mass x-coordinate
+		double newY = (this.y*this.mass + otherBody.y*otherBody.mass)/combinedMass;//calculate the centre-of-mass y-coordinate
+		return new Body(newX, newY, 0, 0, 0, 0, combinedMass, null); //return the new aggregate body
+	}
 	
 	public double getForceX() {
 		return forceX;
