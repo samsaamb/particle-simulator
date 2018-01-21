@@ -3,6 +3,7 @@ package uk.co.samsaam.javafx;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import uk.co.samsaam.javafx.Main;
+import uk.co.samsaam.javafx.Quadrant;
 
 public class Body {
 	private double x;
@@ -50,8 +51,8 @@ public class Body {
 		yVelocity += (forceY/mass);
 		x += xVelocity; //appending positions with velocity
 		y += yVelocity;
-		int r = (int)  (255 -(( (1/ (Math.abs(xVelocity) +1) * 255)))); //Mapping the velocity of an object to its colour
-		int g = (int)  (255 -(( (1/ (Math.abs(yVelocity) +1) * 255)))); 
+		int r = (int)  (255 - (255 / (Math.abs(xVelocity) + 1))); //Mapping the velocity of an object to its colour
+		int g = (int)  (255 - (255 / (Math.abs(xVelocity) + 1))); 
 		int b = (int) 50;
 		colour = Color.rgb(r, g, b);
 	}
@@ -70,6 +71,9 @@ public class Body {
 		forceY = 0.0;
 	}
 	
+	public boolean in(Quadrant quadrant) {
+		return (quadrant.contains(this.x, this.y));
+	}
 	
 	
 	public double getForceX() {
