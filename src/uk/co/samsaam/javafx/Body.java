@@ -2,6 +2,7 @@ package uk.co.samsaam.javafx;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import uk.co.samsaam.javafx.Main;
 
 public class Body {
 	private double x;
@@ -55,17 +56,17 @@ public class Body {
 		colour = Color.rgb(r, g, b);
 	}
 	
-	public void screenRestrict(Body body, GraphicsContext graphics) {
-		if (body.x <= 0.0 || body.x >= graphics.getCanvas().getWidth()) {
-			body.xVelocity *= -1;
+	public void screenRestrict(Body body) { 
+		if (body.x <= 0.0 || body.x >= Main.screenWidth) {
+			body.xVelocity *= -1; //negates the xvelocity if the body is outside of the screen width
 		}
-		if (body.y <= 0.0 || body.y >= graphics.getCanvas().getHeight()) {
-			body.yVelocity *= -1;
+		if (body.y <= 0.0 || body.y >= Main.screenHeight) { 
+			body.yVelocity *= -1; //negates the yvelocity if the body is outside of the screen height
 		} 
 	}
 	
 	public void resetForce() {
-		forceX = 0.0;
+		forceX = 0.0; //resets the force on the body in both directions
 		forceY = 0.0;
 	}
 	

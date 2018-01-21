@@ -50,6 +50,7 @@ public class Loop extends AnimationTimer {
 		graphics.setFill(Color.WHITE); 
 		String FPS = "FPS: " + Integer.toString(fps);
 		graphics.fillText(FPS, 0, 12); //Painting the fps to the top left corner
+		graphics.fillText(String.valueOf(bodies.size()) + " bodies", 45, 12); //Drawing the number of bodies to the top left corner
 	}
 
 	// loops through array list of bodies and increments velocity
@@ -57,9 +58,8 @@ public class Loop extends AnimationTimer {
 		for (Body body : bodies) { //for each body in the arraylist of bodies
 			body.resetForce(); //resetting the force on the body before calculating it again
 			
-			if (screenRestrict == true) {
-				body.screenRestrict(body, graphics);
-			}
+			if (screenRestrict) 
+				body.screenRestrict(body); //if the screen restriction is enabled, restrict the bodies to the screen
 			
 			for (Body otherBody : bodies) {
 				if (body != otherBody) { //checking that a body is not itself
@@ -86,10 +86,10 @@ public class Loop extends AnimationTimer {
 			double mass = rand(500000, 5000000);
 			int width = (int) mass / 500000;  //This makes it so that a body's mass is relational to it's size.
 			int height = width;
-			double xvelocity = 0;
+			double xvelocity = 0; //bodies are initialised with 0 velocity
 			double yvelocity = 0;
 			Color colour = Color.WHITE;
-			bodies.add(new Body(x, y, width, height, xvelocity, yvelocity, mass, colour));
+			bodies.add(new Body(x, y, width, height, xvelocity, yvelocity, mass, colour)); //add the new body to the list of bodies
 		}
 	}
 
