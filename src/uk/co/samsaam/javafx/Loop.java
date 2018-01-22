@@ -15,10 +15,10 @@ import javafx.scene.paint.Color;
 public class Loop extends AnimationTimer {
 	
 	private static long before = System.nanoTime(); //Used in calculating fps.
-	private static final boolean screenRestrict = false; //Setting, if true bodies won't leave the screen.
+	private static final boolean screenRestrict = true; //Setting, if true bodies won't leave the screen.
 	private ArrayList<Body> bodies = new ArrayList<Body>(); //declaring the arraylist of bodies
 	private GraphicsContext graphics; //declaring the graphics object
-	private static final int NUM_GENERATED = 1000; //number of bodies to generate
+	private static final int NUM_GENERATED = 10000; //number of bodies to generate
 	private static final double SECONDS_IN_NANOSECONDS = 1E9; //Number of nanoseconds in a second, used to calculate dt in seconds and fps.
 	
 
@@ -54,19 +54,26 @@ public class Loop extends AnimationTimer {
 
 	// loops through array list of bodies and increments velocity
 	private void update(double dt) {	
-		for (Body body : bodies) { //for each body in the arraylist of bodies
+		double midX = Main.screenWidth / 2;
+		double midY = Main.screenWidth / 2;
+		
+		Quadrant quad = new Quadrant(midX, midY, Main.screenWidth);
+		Quadtree tree = new Quadtree(quad);
+		
+		for (Body body : bodies) {
+			if (body.in(quad)) {
+				tree.insert(body);
+			}
+		}
+		
+		for (Body body : bodies) {
 			body.resetForce(); //resetting the force on the body before calculating it again
+			tree.updateForce(body);
+			body.updateParameters(dt);
 			
 			if (screenRestrict) 
-				body.screenRestrict(body); //if the screen restriction is enabled, restrict the bodies to the screen
+				body.screenRestrict(body);
 			
-			for (Body otherBody : bodies) {
-				if (body != otherBody) { //checking that a body is not itself
-					body.calculateForce(otherBody); //calculating the force between the two bodies
-				}
-			}
-			
-			body.updateParameters(dt); //update the positions of the bodies
 		}
 	}
 
@@ -82,8 +89,8 @@ public class Loop extends AnimationTimer {
 		for (int i = 0; i < NUM_GENERATED; i++) {
 			double x = rand(0, graphics.getCanvas().getWidth());
 			double y = rand(0, graphics.getCanvas().getHeight());
-			double mass = rand(500000, 5000000);
-			int width = (int) mass / 500000;  //This makes it so that a body's mass is relational to it's size.
+			double mass = 5E4;
+			int width = 1;  //This makes it so that a body's mass is relational to it's size.
 			int height = width;
 			double xvelocity = 0; //bodies are initialised with 0 velocity
 			double yvelocity = 0;

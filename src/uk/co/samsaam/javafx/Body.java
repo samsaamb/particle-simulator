@@ -1,8 +1,6 @@
 package uk.co.samsaam.javafx;
 
 import javafx.scene.paint.Color;
-import uk.co.samsaam.javafx.Main;
-import uk.co.samsaam.javafx.Quadrant;
 
 public class Body {
 	
