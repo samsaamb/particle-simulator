@@ -3,7 +3,7 @@ package uk.co.samsaam.javafx;
 public class Quadtree {
 
     // threshold value
-    private static final double Theta = 1;
+    private static final double Theta = 0.5;
 
     private Body body;     // body or aggregate body stored in this node
     private Quadrant quad;     // square region that the tree represents
