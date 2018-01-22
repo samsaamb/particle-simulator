@@ -58,10 +58,10 @@ public class Body {
 	}
 	
 	public void screenRestrict(Body body) { 
-		if (body.x <= 0.0 || body.x >= Main.screenWidth) {
+		if (body.x <= 0.0 || body.x >= NBodyApplication.SCREEN_WIDTH) {
 			body.xVelocity *= -1; //negates the xvelocity if the body is outside of the screen width
 		}
-		if (body.y <= 0.0 || body.y >= Main.screenHeight) { 
+		if (body.y <= 0.0 || body.y >= NBodyApplication.SCREEN_HEIGHT) { 
 			body.yVelocity *= -1; //negates the yvelocity if the body is outside of the screen height
 		} 
 	}

@@ -12,7 +12,7 @@ import javafx.animation.AnimationTimer;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-public class Loop extends AnimationTimer {
+public class Simulation extends AnimationTimer {
 	
 	private static long before = System.nanoTime(); //Used in calculating fps.
 	private static final boolean screenRestrict = false; //Setting, if true bodies won't leave the screen.
@@ -22,7 +22,7 @@ public class Loop extends AnimationTimer {
 	private static final double SECONDS_IN_NANOSECONDS = 1E9; //Number of nanoseconds in a second, used to calculate dt in seconds and fps.
 	
 
-	public Loop(GraphicsContext graphics) {
+	public Simulation(GraphicsContext graphics) {
 		this.graphics = graphics; //Setting the graphics object so it is ready for use
 		graphics.setFill(Color.WHITE); //Setting the default fill colour to white
 		generateBodies(); //Generates/Initialises the bodies
@@ -54,10 +54,10 @@ public class Loop extends AnimationTimer {
 
 	// loops through array list of bodies and increments velocity
 	private void update(double dt) {	
-		double midX = Main.screenWidth / 2;
-		double midY = Main.screenWidth / 2;
+		double midX = NBodyApplication.SCREEN_WIDTH / 2;
+		double midY = NBodyApplication.SCREEN_WIDTH / 2;
 		
-		Quadrant quad = new Quadrant(midX, midY, Main.screenWidth);
+		Quadrant quad = new Quadrant(midX, midY, NBodyApplication.SCREEN_WIDTH);
 		Quadtree tree = new Quadtree(quad); //declare the quadtree
 		
 		for (Body body : bodies) { //add each body to the quadtree
