@@ -8,8 +8,8 @@ public class Body {
 	
 	private double x;
 	private double y;
-	private int width;
-	private int height;
+	private double width;
+	private double height;
 	private double xVelocity;
 	private double yVelocity;
 	private double forceX;
@@ -17,7 +17,7 @@ public class Body {
 	private double mass;
 	private Color colour;
 	
-	public Body(double x, double y, int width, int height, double xvelocity, double yvelocity, double mass, Color colour) {
+	public Body(double x, double y, double width, double height, double xvelocity, double yvelocity, double mass, Color colour) {
 		this.x = x;
 		this.y = y;
 		this.width = width;
@@ -112,16 +112,16 @@ public class Body {
 	public void setY(double y) {
 		this.y = y;
 	}
-	public int getWidth() {
+	public double getWidth() {
 		return width;
 	}
-	public void setWidth(int width) {
+	public void setWidth(double width) {
 		this.width = width;
 	}
-	public int getHeight() {
+	public double getHeight() {
 		return height;
 	}
-	public void setHeight(int height) {
+	public void setHeight(double height) {
 		this.height = height;
 	}
 	public double getxVelocity() {

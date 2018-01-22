@@ -18,7 +18,7 @@ public class Loop extends AnimationTimer {
 	private static final boolean screenRestrict = true; //Setting, if true bodies won't leave the screen.
 	private ArrayList<Body> bodies = new ArrayList<Body>(); //declaring the arraylist of bodies
 	private GraphicsContext graphics; //declaring the graphics object
-	private static final int NUM_GENERATED = 10000; //number of bodies to generate
+	private static final int NUM_GENERATED = 25000; //number of bodies to generate
 	private static final double SECONDS_IN_NANOSECONDS = 1E9; //Number of nanoseconds in a second, used to calculate dt in seconds and fps.
 	
 
@@ -58,23 +58,24 @@ public class Loop extends AnimationTimer {
 		double midY = Main.screenWidth / 2;
 		
 		Quadrant quad = new Quadrant(midX, midY, Main.screenWidth);
-		Quadtree tree = new Quadtree(quad);
+		Quadtree tree = new Quadtree(quad); //declare the quadtree
 		
-		for (Body body : bodies) {
+		for (Body body : bodies) { //add each body to the quadtree
 			if (body.in(quad)) {
 				tree.insert(body);
 			}
 		}
 		
-		for (Body body : bodies) {
+		
+		bodies.parallelStream().forEach(body -> {
 			body.resetForce(); //resetting the force on the body before calculating it again
 			tree.updateForce(body);
 			body.updateParameters(dt);
 			
-			if (screenRestrict) 
+			if (screenRestrict) {
 				body.screenRestrict(body);
-			
-		}
+			}
+		});
 	}
 
 	// function to generate a random number between min and max parameters
@@ -90,8 +91,8 @@ public class Loop extends AnimationTimer {
 			double x = rand(0, graphics.getCanvas().getWidth());
 			double y = rand(0, graphics.getCanvas().getHeight());
 			double mass = 5E4;
-			int width = 1;  //This makes it so that a body's mass is relational to it's size.
-			int height = width;
+			double width = 1;  //This makes it so that a body's mass is relational to it's size.
+			double height = width;
 			double xvelocity = 0; //bodies are initialised with 0 velocity
 			double yvelocity = 0;
 			Color colour = Color.WHITE;
