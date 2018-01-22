@@ -16,6 +16,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
@@ -172,6 +173,7 @@ public class NBodyApplication extends Application {
 			}
 			
 			String commaSeperatedFields = String.join(", ", invalidFields);
+			status.setTextFill(Color.RED);
 			status.setText("The following settings are invalid: " + commaSeperatedFields);
 		}
 
