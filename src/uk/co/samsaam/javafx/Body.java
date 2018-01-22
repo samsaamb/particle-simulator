@@ -1,12 +1,13 @@
 package uk.co.samsaam.javafx;
 
-import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import uk.co.samsaam.javafx.Body;
 import uk.co.samsaam.javafx.Main;
 import uk.co.samsaam.javafx.Quadrant;
 
 public class Body {
+	
+	private static double G = 6.674E-11; //Gravitational constant, G
+	
 	private double x;
 	private double y;
 	private int width;
@@ -35,7 +36,7 @@ public class Body {
 		return Math.sqrt(dx*dx + dy*dy);
 	}
 	
-	public void calculateForce(Body otherBody, double G) {
+	public void calculateForce(Body otherBody) {
 		double dx = otherBody.x - this.x;
 		double dy = otherBody.y - this.y;
 		double distance = distanceFrom(otherBody);
@@ -53,8 +54,8 @@ public class Body {
 		x += xVelocity; //appending positions with velocity
 		y += yVelocity;
 		int r = (int)  (255 - (255 / (Math.abs(xVelocity) + 1))); //Mapping the velocity of an object to its colour
-		int g = (int)  (255 - (255 / (Math.abs(xVelocity) + 1))); 
-		int b = (int) 50;
+		int g = (int)  (255 - (255 / (Math.abs(yVelocity) + 1))); 
+		int b = (int) 200;
 		colour = Color.rgb(r, g, b);
 	}
 	

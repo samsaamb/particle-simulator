@@ -19,7 +19,6 @@ public class Loop extends AnimationTimer {
 	private ArrayList<Body> bodies = new ArrayList<Body>(); //declaring the arraylist of bodies
 	private GraphicsContext graphics; //declaring the graphics object
 	private static final int NUM_GENERATED = 1000; //number of bodies to generate
-	private static final double G = 6.674 * Math.pow(10, -11); //Gravitational Constant, G
 	private static final double SECONDS_IN_NANOSECONDS = 1E9; //Number of nanoseconds in a second, used to calculate dt in seconds and fps.
 	
 
@@ -63,7 +62,7 @@ public class Loop extends AnimationTimer {
 			
 			for (Body otherBody : bodies) {
 				if (body != otherBody) { //checking that a body is not itself
-					body.calculateForce(otherBody, G); //calculating the force between the two bodies
+					body.calculateForce(otherBody); //calculating the force between the two bodies
 				}
 			}
 			
