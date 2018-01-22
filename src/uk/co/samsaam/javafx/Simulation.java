@@ -14,17 +14,27 @@ import javafx.scene.paint.Color;
 
 public class Simulation extends AnimationTimer {
 	
+	public static double theta;
 	private static long before = System.nanoTime(); //Used in calculating fps.
-	private static final boolean screenRestrict = false; //Setting, if true bodies won't leave the screen.
+
+	private static final double SECONDS_IN_NANOSECONDS = 1E9; //Number of nanoseconds in a second, used to calculate dt in seconds and fps.
+	private static final Color DEFAULT_BODY_COLOUR = Color.WHITE;
+
 	private ArrayList<Body> bodies = new ArrayList<Body>(); //declaring the arraylist of bodies
 	private GraphicsContext graphics; //declaring the graphics object
-	private static final int NUM_GENERATED = 25000; //number of bodies to generate
-	private static final double SECONDS_IN_NANOSECONDS = 1E9; //Number of nanoseconds in a second, used to calculate dt in seconds and fps.
+
+	private int numBodies;
+	private boolean screenRestricted;
+	private boolean colourMapped;
 	
 
-	public Simulation(GraphicsContext graphics) {
+	public Simulation(GraphicsContext graphics, int numBodies, double theta, boolean screenRestricted, boolean colourMapped) {
 		this.graphics = graphics; //Setting the graphics object so it is ready for use
-		graphics.setFill(Color.WHITE); //Setting the default fill colour to white
+		this.numBodies = numBodies;
+		this.screenRestricted = screenRestricted;
+		this.colourMapped = colourMapped;
+		
+		Simulation.theta = theta;
 		generateBodies(); //Generates/Initialises the bodies
 	}
 
@@ -41,12 +51,14 @@ public class Simulation extends AnimationTimer {
 	// Clears screen, loops through array list of body particles and draws them
 	private void draw(int fps) {
 		graphics.setFill(Color.BLACK);
-		graphics.fillRect(0, 0, 1680, 1050); //Colouring the background black
+		graphics.fillRect(0, 0, NBodyApplication.SCREEN_WIDTH, NBodyApplication.SCREEN_HEIGHT); //Colouring the background black
+
 		for (Body body : bodies) {
-			graphics.setFill(body.getColour()); //Paint all of the bodies in the body arraylist
+			graphics.setFill(colourMapped ? body.getColour() : DEFAULT_BODY_COLOUR);
 			graphics.fillOval(body.getX(), body.getY(), body.getWidth(), body.getHeight());
 		}
-		graphics.setFill(Color.WHITE); 
+		
+		graphics.setFill(DEFAULT_BODY_COLOUR); 
 		String FPS = "FPS: " + Integer.toString(fps);
 		graphics.fillText(FPS, 0, 12); //Painting the fps to the top left corner
 		graphics.fillText(String.valueOf(bodies.size()) + " bodies", 45, 12); //Drawing the number of bodies to the top left corner
@@ -72,9 +84,8 @@ public class Simulation extends AnimationTimer {
 			tree.updateForce(body);
 			body.updateParameters(dt);
 			
-			if (screenRestrict) {
+			if (screenRestricted)
 				body.screenRestrict(body);
-			}
 		});
 	}
 
@@ -87,7 +98,7 @@ public class Simulation extends AnimationTimer {
 	/* generate "NUM_GENERATED" amount of bodies, with random x and y positions,
 	sizes, x velocities, y velocities and mass. Adds to the bodies arraylist of body objects */
 	public void generateBodies() {
-		for (int i = 0; i < NUM_GENERATED; i++) {
+		for (int i = 0; i < numBodies; i++) {
 			double x = rand(0, graphics.getCanvas().getWidth());
 			double y = rand(0, graphics.getCanvas().getHeight());
 			double mass = 5E4;
