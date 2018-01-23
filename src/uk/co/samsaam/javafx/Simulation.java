@@ -54,8 +54,8 @@ public class Simulation extends AnimationTimer {
 		graphics.fillRect(0, 0, NBodyApplication.SCREEN_WIDTH, NBodyApplication.SCREEN_HEIGHT); //Colouring the background black
 
 		for (Body body : bodies) {
-			graphics.setFill(colourMapped ? body.getColour() : DEFAULT_BODY_COLOUR);
-			graphics.fillOval(body.getX(), body.getY(), body.getWidth(), body.getHeight());
+			graphics.setFill(colourMapped ? body.getColour() : DEFAULT_BODY_COLOUR); //chooses whether it should paint default or mapped colour
+			graphics.fillOval(body.getX(), body.getY(), body.getWidth(), body.getHeight()); //draw body
 		}
 		
 		graphics.setFill(DEFAULT_BODY_COLOUR); 
@@ -66,10 +66,10 @@ public class Simulation extends AnimationTimer {
 
 	// loops through array list of bodies and increments velocity
 	private void update(double dt) {	
-		double midX = NBodyApplication.SCREEN_WIDTH / 2;
-		double midY = NBodyApplication.SCREEN_WIDTH / 2;
+		double midX = NBodyApplication.SCREEN_WIDTH / 2; //midX of quad with length screenwidth
+		double midY = NBodyApplication.SCREEN_WIDTH / 2; //midy of quad with length screenwidth
 		
-		Quadrant quad = new Quadrant(midX, midY, NBodyApplication.SCREEN_WIDTH);
+		Quadrant quad = new Quadrant(midX, midY, NBodyApplication.SCREEN_WIDTH); //create the root quadrant that represents the whole screen
 		Quadtree tree = new Quadtree(quad); //declare the quadtree
 		
 		for (Body body : bodies) { //add each body to the quadtree
@@ -81,10 +81,10 @@ public class Simulation extends AnimationTimer {
 		
 		bodies.parallelStream().forEach(body -> {
 			body.resetForce(); //resetting the force on the body before calculating it again
-			tree.updateForce(body);
-			body.updateParameters(dt);
+			tree.updateForce(body); //calculate the force on the body using the tree
+			body.updateParameters(dt); //update parameters of body
 			
-			if (screenRestricted)
+			if (screenRestricted) //if screen restricted, restrict body to screen
 				body.screenRestrict(body);
 		});
 	}
@@ -106,7 +106,7 @@ public class Simulation extends AnimationTimer {
 			double height = width;
 			double xvelocity = 0; //bodies are initialised with 0 velocity
 			double yvelocity = 0;
-			Color colour = Color.WHITE;
+			Color colour = DEFAULT_BODY_COLOUR;
 			bodies.add(new Body(x, y, width, height, xvelocity, yvelocity, mass, colour)); //add the new body to the list of bodies
 		}
 	}
