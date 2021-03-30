@@ -1,2 +1,2 @@
 # particle-simulator
-A Level Coursework Project
+N-body simulator using JavaFX, optimised with Barnes-Hut algorithm.
